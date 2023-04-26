@@ -1,20 +1,17 @@
 package com.example.stockmarketapp.data.repository
 
 import com.example.stockmarketapp.data.csv.CSVParser
-import com.example.stockmarketapp.data.csv.CompanyListingParser
 import com.example.stockmarketapp.data.locale.StockDatabase
 import com.example.stockmarketapp.data.mapper.toCompanyListing
 import com.example.stockmarketapp.data.mapper.toCompanyListingEntity
 import com.example.stockmarketapp.data.remote.StockApi
-import com.example.stockmarketapp.domain.StockRepository
+import com.example.stockmarketapp.domain.repository.StockRepository
 import com.example.stockmarketapp.domain.model.CompanyListing
 import com.example.stockmarketapp.util.Resource
-import com.opencsv.CSVReader
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
-import java.io.InputStreamReader
 import javax.inject.Inject
 import javax.inject.Singleton
 

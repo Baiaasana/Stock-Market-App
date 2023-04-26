@@ -1,4 +1,4 @@
-package com.example.stockmarketapp.domain
+package com.example.stockmarketapp.domain.repository
 
 import com.example.stockmarketapp.domain.model.CompanyListing
 import com.example.stockmarketapp.util.Resource
