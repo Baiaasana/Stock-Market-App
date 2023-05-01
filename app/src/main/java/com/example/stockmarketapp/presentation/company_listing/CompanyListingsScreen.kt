@@ -1,5 +1,6 @@
 package com.example.stockmarketapp.presentation.company_listing
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,22 +25,25 @@ fun CompanyListingsScreen(
     navigator: DestinationsNavigator,
     viewModel: CompanyListingsViewModel = hiltViewModel()
 ) {
-    val state = viewModel.state
-
     val swipeRefreshState = rememberSwipeRefreshState(
-        isRefreshing = state.isRefreshing
+        isRefreshing = viewModel.state.isRefreshing
     )
-    Column(modifier = Modifier.fillMaxSize()) {
+    val state = viewModel.state
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
         OutlinedTextField(
             value = state.searchQuery,
             onValueChange = {
-                viewModel.onEvent(CompanyListingsEvent.OnSearchQueryChange(it))
+                viewModel.onEvent(
+                    CompanyListingsEvent.OnSearchQueryChange(it)
+                )
             },
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
             placeholder = {
-                Text(text = "Search")
+                Text(text = "Search...")
             },
             maxLines = 1,
             singleLine = true
@@ -51,7 +55,7 @@ fun CompanyListingsScreen(
             }
         ) {
             LazyColumn(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxSize()
             ) {
                 items(state.companies.size) { i ->
                     val company = state.companies[i]
@@ -60,12 +64,16 @@ fun CompanyListingsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                // TODO: Navigate to details
+//                                navigator.navigate(
+//                                    CompanyInfoScreenDestination(company.symbol)
+//                                )
                             }
                             .padding(16.dp)
                     )
-                    if (i < state.companies.size) {
-                        Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                    if(i < state.companies.size) {
+                        Divider(modifier = Modifier.padding(
+                            horizontal = 16.dp
+                        ))
                     }
                 }
             }
