@@ -1,6 +1,5 @@
 package com.example.stockmarketapp.data.csv
 
-import com.example.stockmarketapp.data.remote.StockApi
 import com.example.stockmarketapp.domain.model.CompanyListing
 import com.opencsv.CSVReader
 import kotlinx.coroutines.Dispatchers

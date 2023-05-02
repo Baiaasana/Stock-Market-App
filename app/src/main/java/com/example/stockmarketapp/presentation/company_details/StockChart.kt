@@ -1,7 +1,6 @@
 package com.example.stockmarketapp.presentation.company_details
 
 import android.graphics.Paint
-import android.graphics.Paint.Align
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -37,87 +36,85 @@ fun StockChart(
     val lowerValue = remember(stocks) {
         stocks.minOfOrNull { it.close }?.toInt() ?: 0
     }
-
     val density = LocalDensity.current
     val textPaint = remember(density) {
         Paint().apply {
             color = android.graphics.Color.WHITE
-            textAlign = Align.CENTER
+            textAlign = Paint.Align.CENTER
             textSize = density.run { 12.sp.toPx() }
-
         }
     }
     Canvas(modifier = modifier) {
         val spacePerHour = (size.width - spacing) / stocks.size
-        (0 until stocks.size - 1 step 2).forEach { index ->
-            val stock = stocks[index]
-            val hour = stock.date.hour
+        (0 until stocks.size - 1 step 2).forEach { i ->
+            val info = stocks[i]
+            val hour = info.date.hour
             drawContext.canvas.nativeCanvas.apply {
                 drawText(
                     hour.toString(),
-                    spacing + 1 * spacePerHour,
+                    spacing + i * spacePerHour,
                     size.height - 5,
                     textPaint
                 )
             }
-            val yAxisStep = (upperValue - lowerValue) / 5f
-            (0..5).forEach { index ->
-                drawContext.canvas.nativeCanvas.apply {
-                    drawText(
-                        round(lowerValue + yAxisStep * index).toString(),
-                        30f,
-                        size.height - spacing - index * size.height / 5f,
-                        textPaint
-                    )
-                }
-            }
-            var lastX = 0f
-            val strokePath = Path().apply {
-                val height = size.height
-                for(index in stocks.indices){
-                    val stock = stocks[index]
-                    val nextStock = stocks.getOrNull(index + 1) ?: stocks.last()
-                    val leftRatio = (stock.close - lowerValue) / (upperValue - lowerValue)
-                    val rightRatio = (nextStock.close - lowerValue) / (upperValue - lowerValue)
-
-                    // first point
-                    val x1 = spacing + index * spacePerHour
-                    val y1 = height - spacing - (leftRatio * height).toFloat()
-                    val x2 = spacing + (index + 1) * spacePerHour
-                    val y2 = height - spacing - (rightRatio * height).toFloat()
-                    if(index == 0){
-                        moveTo(x1, y1)
-                    }
-                    // continue line
-                    lastX = (x1 + x2) / 2f
-                    quadraticBezierTo(
-                        x1, y1, lastX, (y1 + y2) / 2f
-                    )
-                }
-            }
-            val fillPath = android.graphics.Path(strokePath.asAndroidPath())
-                .asComposePath().apply {
-                    lineTo(lastX, size.height - spacing)
-                    lineTo(spacing, size.height - spacing)
-                    close()
-                }
-            // fill path
-            drawPath(
-                path = fillPath,
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        transparentGraphColor,
-                        Color.Transparent
-                    ),
-                    endY = size.height - spacing
-                )
-            )
-            // stroke path
-            drawPath(
-                path = strokePath,
-                color = graphColor,
-                style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round)
-            )
         }
+        val priceStep = (upperValue - lowerValue) / 5f
+        (0..4).forEach { i ->
+            drawContext.canvas.nativeCanvas.apply {
+                drawText(
+                    round(lowerValue + priceStep * i).toString(),
+                    30f,
+                    size.height - spacing - i * size.height / 5f,
+                    textPaint
+                )
+            }
+        }
+        var lastX = 0f
+        val strokePath = Path().apply {
+            val height = size.height
+            for (i in stocks.indices) {
+                val info = stocks[i]
+                val nextInfo = stocks.getOrNull(i + 1) ?: stocks.last()
+                val leftRatio = (info.close - lowerValue) / (upperValue - lowerValue)
+                val rightRatio = (nextInfo.close - lowerValue) / (upperValue - lowerValue)
+
+                val x1 = spacing + i * spacePerHour
+                val y1 = height - spacing - (leftRatio * height).toFloat()
+                val x2 = spacing + (i + 1) * spacePerHour
+                val y2 = height - spacing - (rightRatio * height).toFloat()
+                if (i == 0) {
+                    moveTo(x1, y1)
+                }
+                lastX = (x1 + x2) / 2f
+                quadraticBezierTo(
+                    x1, y1, lastX, (y1 + y2) / 2f
+                )
+            }
+        }
+        val fillPath = android.graphics.Path(strokePath.asAndroidPath())
+            .asComposePath()
+            .apply {
+                lineTo(lastX, size.height - spacing)
+                lineTo(spacing, size.height - spacing)
+                close()
+            }
+        drawPath(
+            path = fillPath,
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    transparentGraphColor,
+                    Color.Transparent
+                ),
+                endY = size.height - spacing
+            )
+        )
+        drawPath(
+            path = strokePath,
+            color = graphColor,
+            style = Stroke(
+                width = 3.dp.toPx(),
+                cap = StrokeCap.Round
+            )
+        )
     }
 }

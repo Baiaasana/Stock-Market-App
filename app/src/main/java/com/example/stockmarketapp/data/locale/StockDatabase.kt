@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
     exportSchema = false,
     version = 1,
 )
-abstract class StockDatabase: RoomDatabase() {
+abstract class StockDatabase : RoomDatabase() {
 
     abstract val dao: StockDao
 }

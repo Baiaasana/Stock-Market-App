@@ -24,5 +24,5 @@ fun CompanyDetailsDto.toCompanyDetails(): CompanyDetails {
         name = name ?: "",
         country = country ?: "",
         industry = industry ?: "",
-        )
+    )
 }

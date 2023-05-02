@@ -18,7 +18,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     @Provides
     @Singleton
     fun providesStockApi(): StockApi {
@@ -27,14 +26,17 @@ object AppModule {
             .addConverterFactory(MoshiConverterFactory.create())
             .client(
                 OkHttpClient.Builder()
-                .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC }).build())
+                    .addInterceptor(HttpLoggingInterceptor().apply {
+                        level = HttpLoggingInterceptor.Level.BASIC
+                    }).build()
+            )
             .build()
             .create()
     }
 
     @Provides
     @Singleton
-    fun providesStockDatabase(app:Application): StockDatabase {
+    fun providesStockDatabase(app: Application): StockDatabase {
         return Room.databaseBuilder(
             app,
             StockDatabase::class.java,

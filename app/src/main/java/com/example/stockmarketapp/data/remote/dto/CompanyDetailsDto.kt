@@ -8,4 +8,4 @@ data class CompanyDetailsDto(
     @field:Json(name = "Name") val name: String?,
     @field:Json(name = "Country") val country: String?,
     @field:Json(name = "Industry") val industry: String?,
-    )
+)

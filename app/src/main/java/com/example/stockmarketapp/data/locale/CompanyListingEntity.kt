@@ -2,7 +2,6 @@ package com.example.stockmarketapp.data.locale
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
 @Entity
 data class CompanyListingEntity(
     @PrimaryKey val id: Int? = null,

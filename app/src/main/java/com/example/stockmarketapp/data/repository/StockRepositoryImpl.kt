@@ -22,7 +22,7 @@ import javax.inject.Singleton
 @Singleton
 class StockRepositoryImpl @Inject constructor(
     private val api: StockApi,
-    private val database: StockDatabase,
+    database: StockDatabase,
     private val companyListingParser: CSVParser<CompanyListing>,
     private val intraDayParser: CSVParser<IntraDayInfo>
 ) : StockRepository {
@@ -35,7 +35,6 @@ class StockRepositoryImpl @Inject constructor(
             emit(Resource.Loading(true))
             val localListing = dao.searchCompanyByName(query)
             emit(Resource.Success(data = localListing.map { it.toCompanyListing() }))
-            Log.d("log", "localListing impl ".plus(localListing))
 
             val isDbEmpty = localListing.isEmpty() && query.isBlank()
             val justLoadFromCache = !isDbEmpty && !fetchFromRemote
@@ -45,7 +44,6 @@ class StockRepositoryImpl @Inject constructor(
             }
             val remoteListing = try {
                 val response = api.getListings()
-                Log.d("log", "response impl ".plus(response.byteStream()))
                 companyListingParser.parse(response.byteStream())
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -56,7 +54,6 @@ class StockRepositoryImpl @Inject constructor(
                 emit(Resource.Error("Couldn't load data"))
                 null
             }
-            Log.d("log", "remoteListing impl ".plus(remoteListing))
             remoteListing?.let { listings ->
                 dao.clearListing()
                 dao.insertListings(listings.map { it.toCompanyListingEntity() })
@@ -64,9 +61,6 @@ class StockRepositoryImpl @Inject constructor(
                     Resource.Success(data = dao.searchCompanyByName("")
                         .map { it.toCompanyListing() })
                 )
-                val data = dao.searchCompanyByName("").map { it.toCompanyListing() }
-                Log.d("log", "data impl ".plus(data))
-
                 emit(Resource.Loading(false))
             }
         }
@@ -75,7 +69,9 @@ class StockRepositoryImpl @Inject constructor(
     override suspend fun getIntraDayInfo(symbol: String): Resource<List<IntraDayInfo>> {
         return try {
             val response = api.getIntraDayInfo(symbol = symbol)
+            Log.d("log", "response day".plus(response))
             val result = intraDayParser.parse(response.byteStream())
+            Log.d("log", "result day".plus(result))
             Resource.Success(result)
         } catch (e: IOException) {
             e.printStackTrace()
@@ -90,6 +86,7 @@ class StockRepositoryImpl @Inject constructor(
     override suspend fun getCompanyDetails(symbol: String): Resource<CompanyDetails> {
         return try {
             val result = api.getDetailedInfo(symbol = symbol)
+            Log.d("log", "result company".plus(result))
             Resource.Success(result.toCompanyDetails())
         } catch (e: IOException) {
             e.printStackTrace()

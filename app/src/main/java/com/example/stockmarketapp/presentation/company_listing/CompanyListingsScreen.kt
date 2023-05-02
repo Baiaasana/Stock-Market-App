@@ -1,6 +1,5 @@
 package com.example.stockmarketapp.presentation.company_listing
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.stockmarketapp.presentation.destinations.CompanyDetailsScreenDestination
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -64,16 +64,18 @@ fun CompanyListingsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-//                                navigator.navigate(
-//                                    CompanyInfoScreenDestination(company.symbol)
-//                                )
+                                navigator.navigate(
+                                    CompanyDetailsScreenDestination(company.symbol.toString())
+                                )
                             }
                             .padding(16.dp)
                     )
-                    if(i < state.companies.size) {
-                        Divider(modifier = Modifier.padding(
-                            horizontal = 16.dp
-                        ))
+                    if (i < state.companies.size) {
+                        Divider(
+                            modifier = Modifier.padding(
+                                horizontal = 16.dp
+                            )
+                        )
                     }
                 }
             }
