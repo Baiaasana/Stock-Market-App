@@ -1,7 +1,5 @@
 package com.example.stockmarketapp.domain.model
 
-import com.squareup.moshi.Json
-
 data class CompanyDetails(
     val symbol: String?,
     val description: String?,

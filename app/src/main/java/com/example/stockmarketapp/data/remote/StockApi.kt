@@ -1,7 +1,6 @@
 package com.example.stockmarketapp.data.remote
 
 import com.example.stockmarketapp.data.remote.dto.CompanyDetailsDto
-import com.example.stockmarketapp.domain.model.CompanyDetails
 import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Query

@@ -2,7 +2,6 @@ package com.example.stockmarketapp.data.repository
 
 import android.util.Log
 import com.example.stockmarketapp.data.csv.CSVParser
-import com.example.stockmarketapp.data.csv.IntraDayParser
 import com.example.stockmarketapp.data.locale.StockDatabase
 import com.example.stockmarketapp.data.mapper.toCompanyDetails
 import com.example.stockmarketapp.data.mapper.toCompanyListing
@@ -30,8 +29,7 @@ class StockRepositoryImpl @Inject constructor(
 
     private val dao = database.dao
     override suspend fun getCompanyListing(
-        fetchFromRemote: Boolean,
-        query: String
+        fetchFromRemote: Boolean, query: String
     ): Flow<Resource<List<CompanyListing>>> {
         return flow {
             emit(Resource.Loading(true))
@@ -63,8 +61,8 @@ class StockRepositoryImpl @Inject constructor(
                 dao.clearListing()
                 dao.insertListings(listings.map { it.toCompanyListingEntity() })
                 emit(
-                    Resource.Success(
-                        data = dao.searchCompanyByName("").map { it.toCompanyListing() })
+                    Resource.Success(data = dao.searchCompanyByName("")
+                        .map { it.toCompanyListing() })
                 )
                 val data = dao.searchCompanyByName("").map { it.toCompanyListing() }
                 Log.d("log", "data impl ".plus(data))
@@ -79,11 +77,11 @@ class StockRepositoryImpl @Inject constructor(
             val response = api.getIntraDayInfo(symbol = symbol)
             val result = intraDayParser.parse(response.byteStream())
             Resource.Success(result)
-        }catch (e: IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
             Resource.Error(message = "Couldn't load IntraDay info")
 
-        }catch (e: HttpException){
+        } catch (e: HttpException) {
             e.printStackTrace()
             Resource.Error(message = "Couldn't load IntraDay info")
         }
@@ -93,11 +91,11 @@ class StockRepositoryImpl @Inject constructor(
         return try {
             val result = api.getDetailedInfo(symbol = symbol)
             Resource.Success(result.toCompanyDetails())
-        }catch (e: IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
             Resource.Error(message = "Couldn't load company info")
 
-        }catch (e: HttpException){
+        } catch (e: HttpException) {
             e.printStackTrace()
             Resource.Error(message = "Couldn't load company info")
         }
